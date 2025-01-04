@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Poll</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+<div class="container">
+  <!-- Navigation -->
+  <div class="navigation">
+    <ul>
+      <li>
+        <a th:href="@{/index}">
+          <span class="icon"><ion-icon name="stats-chart-outline"></ion-icon></span>
+          <span class="title">Statistics</span>
+        </a>
+      </li>
+      <li>
+        <a th:href="@{/polls}">
+          <span class="icon"><ion-icon name="bar-chart-outline"></ion-icon></span>
+          <span class="title">Polls</span>
+        </a>
+      </li>
+      <li>
+        <a th:href="@{/createPoll}">
+          <span class="icon"><ion-icon name="create-outline"></ion-icon></span>
+          <span class="title">Create Poll</span>
+        </a>
+      </li>
+      <li>
+        <a th:href="@{/}">
+          <span class="icon"><ion-icon name="log-out-outline"></ion-icon></span>
+          <span class="title">Sign Out</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main">
+    <div class="topbar">
+      <div class="toggle"><ion-icon name="menu-outline"></ion-icon></div>
+      <div class="user"><img th:src="@{/imgs/user.png}" alt="User"></div>
+    </div>
+
+    <!-- Create Poll Content -->
+    <div class="create-poll-container">
+      <div class="create-poll-container">
+        <div class="create-poll-card">
+          <h1>Create a New Poll</h1>
+
+          <form th:action="@{/poll}" method="post" th:object="${pollData}">
+            <label for="poll-name">Poll Name</label>
+            <input type="text" id="poll-name" th:field="*{question}" placeholder="Enter poll name" required>
+
+            <label for="options-container">Poll Options</label>
+            <div id="options-container">
+              <!-- Dynamically render each option -->
+              <div th:each="option, stat : *{options}">
+                <input type="text"
+                       th:field="*{options[__${stat.index}__]}"
+                       th:attr="placeholder='Option ' + ${stat.index + 1}"
+                       required>
+              </div>
+            </div>
+
+            <button type="button" class="add-option-btn" onclick="addOption()">Add Another Option</button>
+            <button type="submit">Create Poll</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script th:src="@{/js/main.js}"></script>
+<!-- ====== ionicons ======= -->
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</body>
+
+</html>

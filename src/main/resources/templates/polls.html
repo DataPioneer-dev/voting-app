@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Polls</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+<div class="container">
+  <!-- Navigation -->
+  <div class="navigation">
+    <ul>
+      <li>
+        <a th:href="@{/index}" aria-label="Go to Statistics">
+          <span class="icon"><ion-icon name="stats-chart-outline"></ion-icon></span>
+          <span class="title">Statistics</span>
+        </a>
+      </li>
+      <li>
+        <a th:href="@{/polls}" aria-label="Go to Polls">
+          <span class="icon"><ion-icon name="bar-chart-outline"></ion-icon></span>
+          <span class="title">Polls</span>
+        </a>
+      </li>
+      <li>
+        <a th:href="@{/createPoll}" aria-label="Create New Poll">
+          <span class="icon"><ion-icon name="create-outline"></ion-icon></span>
+          <span class="title">Create Poll</span>
+        </a>
+      </li>
+      <li>
+        <a th:href="@{/}" aria-label="Sign Out">
+          <span class="icon"><ion-icon name="log-out-outline"></ion-icon></span>
+          <span class="title">Sign Out</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main">
+    <div class="topbar">
+      <div class="toggle"><ion-icon name="menu-outline" aria-label="Toggle Menu"></ion-icon></div>
+      <div class="user">
+        <img th:src="@{/imgs/user.png}" alt="User">
+      </div>
+    </div>
+
+    <div class="polls-container">
+      <!-- Display if no polls are available -->
+      <div th:if="${#lists.isEmpty(polls)}">
+        <p>No polls available at the moment. Please check back later.</p>
+      </div>
+
+      <!-- Poll Selector -->
+      <div th:if="${!#lists.isEmpty(polls)}" class="poll-selector">
+        <h2>Select a Poll</h2>
+        <form th:action="@{/polls}" method="get">
+          <select name="selectedPollId" onchange="this.form.submit()" aria-label="Select a Poll">
+            <option value="" disabled selected>Please select a poll</option>
+            <option th:each="poll : ${polls}" th:value="${poll.id}" th:text="${poll.question}"></option>
+          </select>
+        </form>
+      </div>
+
+      <!-- Poll Details -->
+      <div th:if="${selectedPoll != null}" class="poll-details">
+        <h2 th:text="${selectedPoll.question}">Poll Question</h2>
+        <form id="poll-form" th:action="@{/vote}" method="post">
+          <input type="hidden" name="selectedPollId" th:value="${selectedPoll.id}" /> <!-- Hidden to pass poll ID -->
+          <div class="poll-options" th:each="option : ${selectedPoll.optionList}">
+            <label>
+              <input type="checkbox" name="optionIds[]" th:value="${option.id}" aria-label="Poll Option">
+              <span th:text="${option.description}"></span>
+            </label>
+          </div>
+          <div th:if="${successMessage != null}" class="success-box">
+            <ion-icon name="checkmark-circle-outline"></ion-icon>
+            <span th:text="${successMessage}"></span>
+          </div>
+          <div th:if="${errorMessage != null}" class="warning-box">
+            <ion-icon name="alert-circle-outline"></ion-icon>
+            <span th:text="${errorMessage}"></span>
+          </div>
+          <button type="submit" class="vote-button">Vote</button>
+        </form>
+      </div>
+      <div th:if="${selectedPoll == null}">
+        <p>Please select a poll to view details and vote.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script th:src="@{/js/main.js}"></script>
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</body>
+
+</html>
